@@ -81,11 +81,21 @@ class AllBookmark extends StatelessWidget {
                             ),
                             SizedBox(
                               width: 280,
-                              child: Text(
-                                "${Data.bookMarkURL[index].toString()}",
-                                style: TextStyle(fontSize: 20),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      'bookmark_page',
+                                      arguments: Data.bookMarkURL[index]);
+                                },
+                                child: Text(
+                                  "${Data.bookMarkURL[index].toString()}",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.blue,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
                             SizedBox(

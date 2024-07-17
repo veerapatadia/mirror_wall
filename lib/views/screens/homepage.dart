@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:mirror_wall_app/model/bookmark.dart';
 import 'package:provider/provider.dart';
-
 import '../../provider/connectivityprovider.dart';
 import '../../provider/popupmenuprovider.dart';
 
