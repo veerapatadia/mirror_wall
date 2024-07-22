@@ -14,4 +14,9 @@ class bookmarkProvider extends ChangeNotifier {
     Data.bookMarkURL.removeAt(index);
     notifyListeners();
   }
+
+  void allBookmark(BuildContext context) {
+    Navigator.pushNamed(context, 'bookmark');
+    notifyListeners();
+  }
 }

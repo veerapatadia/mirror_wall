@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:mirror_wall_app/model/bookmark.dart';
+import 'package:mirror_wall_app/provider/bookmarkprovider.dart';
 import 'package:provider/provider.dart';
 import '../../provider/connectivityprovider.dart';
-import '../../provider/popupmenuprovider.dart';
 
 class homepage extends StatefulWidget {
   const homepage({super.key});
@@ -32,40 +32,42 @@ class _homepageState extends State<homepage> {
         title: Text("My Browser"),
         centerTitle: true,
         actions: [
+          IconButton(
+            onPressed: () {
+              Provider.of<bookmarkProvider>(context, listen: false)
+                  .allBookmark(context);
+            },
+            icon: Icon(Icons.bookmark_added_rounded),
+          ),
           PopupMenuButton(
-            onSelected: (value) {
-              Provider.of<PopupMenuProvider>(context, listen: false)
-                  .allBookmark(context, value);
+            onSelected: (val) {
+              inAppWebViewController?.loadUrl(
+                urlRequest: URLRequest(
+                  url: WebUri("$val"),
+                ),
+              );
             },
             itemBuilder: (context) {
-              return [
+              return <PopupMenuEntry>[
                 PopupMenuItem(
-                  value: 1,
-                  child: Row(
-                    children: [
-                      Icon(Icons.bookmark),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("All `Bookmarks")
-                    ],
-                  ),
+                  child: Text("Google"),
+                  value: "https://www.google.com",
                 ),
                 PopupMenuItem(
-                  value: 2,
-                  child: Row(
-                    children: [
-                      Icon(Icons.screen_search_desktop_outlined),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("Search Engine")
-                    ],
-                  ),
+                  child: Text("Yahoo"),
+                  value: "https://www.yahoo.com",
+                ),
+                PopupMenuItem(
+                  child: Text("Bing"),
+                  value: "https://www.bing.com",
+                ),
+                PopupMenuItem(
+                  child: Text("DuckDuckGo"),
+                  value: "https://www.duckduckgo.com",
                 ),
               ];
             },
-          )
+          ),
         ],
       ),
       body: Column(

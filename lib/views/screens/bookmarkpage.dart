@@ -13,6 +13,9 @@ class _bookmarkpageState extends State<bookmarkpage> {
   Widget build(BuildContext context) {
     String data = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
       body: InAppWebView(
         initialUrlRequest: URLRequest(
           url: WebUri(data),
