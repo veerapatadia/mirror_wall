@@ -5,24 +5,37 @@ import 'package:mirror_wall_app/provider/bookmarkprovider.dart';
 import 'package:provider/provider.dart';
 import '../../provider/connectivityprovider.dart';
 
-class homepage extends StatefulWidget {
-  const homepage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<homepage> createState() => _homepageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _homepageState extends State<homepage> {
+class _HomePageState extends State<HomePage> {
   InAppWebViewController? inAppWebViewController;
   PullToRefreshController? pullToRefreshController;
   TextEditingController searchController = TextEditingController();
   bool isTapped = false;
+  bool canGoBack = false;
+  bool canGoForward = false;
 
   @override
   void initState() {
     Provider.of<ConnectivityProvider>(context, listen: false)
         .checkConnectivity();
     super.initState();
+  }
+
+  void updateButton() async {
+    if (inAppWebViewController != null) {
+      bool back = await inAppWebViewController!.canGoBack();
+      bool forward = await inAppWebViewController!.canGoForward();
+      setState(() {
+        canGoBack = back;
+        canGoForward = forward;
+      });
+    }
   }
 
   @override
@@ -104,9 +117,11 @@ class _homepageState extends State<homepage> {
                     ),
                     onLoadStart: (controller, url) {
                       inAppWebViewController = controller;
+                      updateButton();
                     },
                     onLoadStop: (controller, url) async {
                       await pullToRefreshController!.endRefreshing();
+                      updateButton();
                     },
                   );
                 } else {
@@ -148,13 +163,16 @@ class _homepageState extends State<homepage> {
               ),
               IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () async {
-                  if (inAppWebViewController != null) {
-                    if (await inAppWebViewController!.canGoBack()) {
-                      await inAppWebViewController!.goBack();
-                    }
-                  }
-                },
+                onPressed: canGoBack
+                    ? () async {
+                        if (inAppWebViewController != null) {
+                          if (await inAppWebViewController!.canGoBack()) {
+                            await inAppWebViewController!.goBack();
+                            updateButton();
+                          }
+                        }
+                      }
+                    : null,
               ),
               IconButton(
                 icon: Icon(Icons.refresh),
@@ -166,13 +184,16 @@ class _homepageState extends State<homepage> {
               ),
               IconButton(
                 icon: Icon(Icons.arrow_forward),
-                onPressed: () async {
-                  if (inAppWebViewController != null) {
-                    if (await inAppWebViewController!.canGoForward()) {
-                      await inAppWebViewController!.goForward();
-                    }
-                  }
-                },
+                onPressed: canGoForward
+                    ? () async {
+                        if (inAppWebViewController != null) {
+                          if (await inAppWebViewController!.canGoForward()) {
+                            await inAppWebViewController!.goForward();
+                            updateButton();
+                          }
+                        }
+                      }
+                    : null,
               ),
             ],
           ),

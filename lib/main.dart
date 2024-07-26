@@ -13,14 +13,17 @@ void main() {
         ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
         ChangeNotifierProvider(create: (context) => bookmarkProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/': (context) => homepage(),
-          'bookmark': (context) => AllBookmark(),
-          'bookmark_page': (context) => bookmarkpage(),
-        },
-      ),
+      builder: (context, _) {
+        return MaterialApp(
+          darkTheme: ThemeData.dark(),
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/': (context) => HomePage(),
+            'bookmark': (context) => AllBookmark(),
+            'bookmark_page': (context) => bookmarkpage(),
+          },
+        );
+      },
     ),
   );
 }
