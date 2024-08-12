@@ -15,7 +15,6 @@ void main() {
       ],
       builder: (context, _) {
         return MaterialApp(
-          darkTheme: ThemeData.dark(),
           debugShowCheckedModeBanner: false,
           routes: {
             '/': (context) => HomePage(),

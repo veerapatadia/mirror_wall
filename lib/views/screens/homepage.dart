@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   InAppWebViewController? inAppWebViewController;
   PullToRefreshController? pullToRefreshController;
   TextEditingController searchController = TextEditingController();
-  bool isTapped = false;
+  bool isBookmarked = false;
   bool canGoBack = false;
   bool canGoForward = false;
 
@@ -34,6 +34,16 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         canGoBack = back;
         canGoForward = forward;
+      });
+    }
+  }
+
+  void checkIfBookmarked() async {
+    if (inAppWebViewController != null) {
+      WebUri? currentUrl = await inAppWebViewController!.getUrl();
+      bool bookmarked = Data.bookURL.contains(currentUrl.toString());
+      setState(() {
+        isBookmarked = bookmarked;
       });
     }
   }
@@ -118,10 +128,12 @@ class _HomePageState extends State<HomePage> {
                     onLoadStart: (controller, url) {
                       inAppWebViewController = controller;
                       updateButton();
+                      checkIfBookmarked(); // Check bookmark status on page load
                     },
                     onLoadStop: (controller, url) async {
                       await pullToRefreshController!.endRefreshing();
                       updateButton();
+                      checkIfBookmarked(); // Check bookmark status on page load
                     },
                   );
                 } else {
@@ -148,17 +160,20 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               IconButton(
-                icon: (isTapped)
-                    ? Icon(Icons.bookmark_add)
-                    : Icon(Icons.bookmark_add_outlined),
+                icon: isBookmarked
+                    ? Icon(Icons.bookmark)
+                    : Icon(Icons.bookmark_border),
                 onPressed: () async {
-                  setState(() {
-                    isTapped = !isTapped;
-                  });
-                  WebUri? txt = await inAppWebViewController!.getUrl();
-                  Data.bookURL.add(txt.toString());
+                  WebUri? currentUrl = await inAppWebViewController!.getUrl();
+                  if (isBookmarked) {
+                    Data.bookURL.remove(currentUrl.toString());
+                  } else {
+                    Data.bookURL.add(currentUrl.toString());
+                  }
                   Data.covertUniqueData();
-                  print(Data.bookURL.length.toString());
+                  setState(() {
+                    isBookmarked = !isBookmarked;
+                  });
                 },
               ),
               IconButton(
